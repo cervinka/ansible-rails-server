@@ -1,1 +1,1 @@
-ssh pub keys (*.pub) placed in this folder will be added to deploy user during provision phase
+ssh public keys (*.pub) placed in this folder will be added to authorized_keys of deploy user during provision phase

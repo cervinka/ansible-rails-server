@@ -109,14 +109,14 @@ ruby_user_name: '{{ "root" if ruby_install == "package" else user_name }}'
 mysql_orm: none                         # activerecord sequel datamapper none
 mysql_db_name: "{{ app_name }}"
 mysql_db_user: "{{ app_name }}"
-mysql_db_password:
+mysql_db_password: demo_password
 
 # === POSTGRESQL
 postgresql_version: 9.3
 postgresql_orm: none                    # activerecord sequel datamapper none
 postgresql_db_name: "{{ app_name }}"
 postgresql_db_user: "{{ app_name }}"
-postgresql_db_password: asdf
+postgresql_db_password: demo_password
 postgresql_extensions:
   - hstore
 
