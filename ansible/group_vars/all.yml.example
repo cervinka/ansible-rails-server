@@ -42,6 +42,10 @@ local_rails_path: "{{ inventory_dir }}/../.."
     #   - config
     #   - ...
 
+# === OS
+profile_d_path: '{{ user_home_path }}/profile.d'
+
+
 # === DATABASES
 databases:
   - postgresql
