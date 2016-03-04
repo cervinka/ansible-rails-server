@@ -1,0 +1,31 @@
+---
+- name: Install packages
+  apt: name={{ item }}
+  with_items:
+    - libpq-dev
+    - postgresql
+    - postgresql-contrib
+    - python-pip
+    - python-dev
+
+- name: Configure PostgreSQL - postgresql.conf
+  template: src=postgresql.conf.j2 dest=/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
+  notify: restart postgresql
+
+- name: Configure PostgreSQL - pg_hba.conf
+  template: src=pg_hba.conf.j2 dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
+  notify: restart postgresql
+
+
+- name: Install required Python modules
+  pip: name=psycopg2
+
+
+- name: Make sure the postgis extensions are installed
+  apt: name={{ item }}
+  with_items:
+    - libgeos-c1
+    - 'postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}'
+  notify: restart postgresql
+  when: "postgresql_extensions and 'postgis' in postgresql_extensions"
+

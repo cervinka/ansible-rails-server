@@ -1,0 +1,4 @@
+---
+rails_env: staging
+target: server            # server virtualbox
+

@@ -1,0 +1,6 @@
+---
+- name: restart delayed_job
+  become: true
+  service: name={{ delayed_job_app_name }} state=restarted
+  when: "'delayed_job' in background_jobs"
+  ignore_errors: yes

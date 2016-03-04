@@ -1,0 +1,8 @@
+---
+- include: sidekiq.yml
+- include: delayed_job.yml
+- include: resque.yml
+- include: puma.yml
+- include: unicorn.yml
+- include: ../../provision-redis/handlers/main.yml
+- include: ../../provision-nginx/handlers/main.yml

@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+# Procfile for combining all logs
+
+rails_production:           sudo tail -f {{ app_path }}/log/production.log
+puma_production:            sudo tail -f {{ app_path }}/log/puma.production.log
+puma_production_err:        sudo tail -f {{ app_path }}/log/puma.production.err.log
+{% if 'redis' in databases %}
+redis:                      sudo tail -f /var/log/redis/redis-server.log
+{% endif %}
+{% if 'sidekiq' in background_jobs %}
+sidekiq:                    sudo tail -f {{ app_path }}/log/sidekiq.log
+{% endif %}
+nginx_access:               sudo tail -f /var/log/nginx/access.log
+nginx_error:                sudo tail -f /var/log/nginx/error.log
+{% if 'postgresql' in databases %}
+postgresql:                 sudo tail -f /var/log/postgresql/*
+{% endif %}

@@ -1,0 +1,50 @@
+---
+- name: Delete log directory
+  file: path={{ this_release_path }}/log state=absent
+
+- name: Delete tmp directory
+  file: path={{ this_release_path }}/tmp state=absent
+
+
+- name: Symlink shared files
+  file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
+  with_items:
+#    - config/database.yml
+#    - config/secrets.yml
+#    - config/puma.{{ rails_env }}.rb
+    - log
+    - tmp
+    - public/assets
+
+
+#- name: Create and migrate DB
+#  command: /bin/bash -l -c 'bundle exec rake db:create db:migrate' chdir={{ this_release_path }}
+#  sudo_user: '{{ user_name }}'
+#  ignore_errors: yes
+#  tags:
+#    - rails
+#    - db
+
+
+
+- name: Precompile assets
+  command: /bin/bash -lc 'bundle exec rake assets:precompile'
+  environment:
+    RAILS_ENV: '{{ rails_env }}'
+  args:
+    chdir: '{{ this_release_path }}'
+
+- name: Migrate database
+  command: /bin/bash -lc 'bundle exec rake db:migrate'
+  environment:
+    RAILS_ENV: '{{ rails_env }}'
+  args:
+    chdir: '{{ this_release_path }}'
+
+- name: Symlink new release
+  file: src={{ this_release_path }} dest={{ app_path }} state=link force=yes
+  notify:
+    - restart sidekiq
+    - restart delayed_job
+    - restart resque
+

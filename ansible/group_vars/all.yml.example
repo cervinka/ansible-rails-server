@@ -1,0 +1,161 @@
+---
+# === BASIC SETTINGS
+app_name: demoapp
+
+git_url: git@github.com:demo_user/demoapp.git
+    # git@bitbucket.org:USER/PROJECT.git   git@github.com:USER/PROJECT.git
+
+git_rails_subdir: '/app'
+    # path to rails app from git root
+    # if rails app is subdir of git repo, then set git_rails_subdir to that dir, e.g.: '/app'
+    # if rails app is directly git repo, then set git_rails_subdir to ''
+
+ruby_version: 2.2.3
+
+os_distribution: 'debian/jessie64'
+    # this is only for Vagrant - Vagrantfile grabs os distribution from here
+
+firewall_allowed_ports: [22, 80]
+    # if variable firewall_allowed_ports is commented out, the firewall will not be set
+    # firewall setting is done by ufw and is VERY BASIC now!!
+
+vagrant_app_path: "../../"
+    # this path relatively to Vagrantfile will be mapped as /#{APP_NAME} inside vagrant guest
+    # (Vagrantfile is in development/Vagrantfile)
+
+local_rails_path: "{{ inventory_dir }}/../.."
+    # rails dir relatively to inventory file
+    # you can check if dir is set correctly by executing next playbook in e.g. production dir:
+    #     ansible-playbook -u root -i inventory ../ansible/test_vars.yml -e "variable=local_rails_realpath"
+
+    # set to "{{ inventory_dir }}/../.." if file structure is:
+    # my_rails_app_dir
+    #   - ansible-rails-server <- folder with this project
+    #   - app
+    #   - config
+    #   - ...
+    # set to "{{ inventory_dir }}/../../my_rails_app_dir" if file structure is:
+    # ansible-rails-server <- folder with this project
+    # my_rails_app_dir
+    #   - app
+    #   - config
+    #   - ...
+
+# === DATABASES
+databases:
+  - postgresql
+#  - mysql
+#  - mongodb    # this one fails on debian for now
+  - redis
+
+#=== BACKGROUND JOBS
+background_jobs:
+  - sidekiq
+#  - delayed_job
+#  - resque
+
+# === ONE APP PER SERVER (settings for only one app per server)
+#user_name: '{{ "vagrant" if target == "virtualbox" else app_name }}'
+#path: "{{ user_home_path }}/{{ app_name }}"
+
+# === MULTIPLE APPS PER SERVER (settings for one and more app per server)
+user_name: '{{ "vagrant" if target == "virtualbox" else "deploy" }}'
+path: "{{ user_home_path }}/apps/{{ app_name }}"
+
+
+# === APP SETTINGS
+local_rails_realpath: "{{ local_rails_path | realpath}}"
+group_name: '{{ user_name }}'
+user_home_path: "/home/{{ user_name }}"
+releases_path: '{{ path }}/releases'
+shared_path: '{{ path }}/shared'
+app_path: '{{ path }}{{ "/current" if target != "virtualbox" else "" }}'
+app_public_path: "{{ app_path }}/public"
+app_config_path: '{{ app_path }}/config'
+shared_config_path: '{{ app_path if target == "virtualbox" else shared_path }}/config'
+#app_temp_path: "/tmp/{{ app_name }}"
+app_temp_path: "{{ shared_path }}/tmp"
+app_logs_path: "{{ app_path }}/log"
+environment_file: "{{ path }}/.envrc"
+
+
+packages:
+  - curl
+  - libcurl3
+  - libcurl3-gnutls
+  - libcurl4-openssl-dev
+  - imagemagick
+  - mc
+#  - qt5-default
+#  - libqt5webkit5-dev
+
+# === GIT
+git_branch: private
+git_cache_path: '{{ path }}/shared/git_cache'
+git_rails_path: '{{ git_cache_path }}{{ git_rails_subdir }}'
+
+
+# === RUBY
+ruby_install: rbenv
+ruby_user_name: '{{ "root" if ruby_install == "package" else user_name }}'
+
+
+# === MYSQL
+mysql_orm: none                         # activerecord sequel datamapper none
+mysql_db_name: "{{ app_name }}"
+mysql_db_user: "{{ app_name }}"
+mysql_db_password:
+
+# === POSTGRESQL
+postgresql_version: 9.3
+postgresql_orm: none                    # activerecord sequel datamapper none
+postgresql_db_name: "{{ app_name }}"
+postgresql_db_user: "{{ app_name }}"
+postgresql_db_password: asdf
+postgresql_extensions:
+  - hstore
+
+# === MONGODB
+mongodb_orm: none                       # mongoid mongomapper none
+mongodb_db_name: "{{ app_name }}"
+
+# === REDIS
+redis_orm: none
+
+
+
+# === DELAYED JOB
+delayed_job_command: bin/delayed_job run
+delayed_job_app_name: "{{ app_name }}-delayed_job"
+
+# === SIDEKIQ
+sidekiq_command: sidekiq
+sidekiq_app_name: "{{ app_name }}-sidekiq"
+
+# === RESQUE
+resque_command: rake resque:work
+resque_app_name: "{{ app_name }}-resque"
+
+# === NGINX
+server_name: localhost                  # for nginx configuration
+server_type: nginx_puma                 # nginx_passenger, nginx_unicorn, nginx_puma
+
+ssl_certificate_path: /etc/nginx/ssl/{{ server_name }}.crt
+ssl_certificate_key_path: /etc/nginx/ssl/{{ server_name }}.key
+
+# === PUMA
+puma_app_name: "{{ app_name }}-puma"
+puma_bind_path: "unix://{{ app_temp_path }}/sockets/puma.{{ rails_env }}.sock"
+puma_config_path: "{{ app_config_path }}/puma.{{ rails_env }}.rb"
+puma_pidfile_path: "{{ app_temp_path }}/pids/puma.{{ rails_env }}.pid"
+puma_stderr_redirect_path: "{{ app_logs_path }}/puma.{{ rails_env }}.err.log"
+puma_stdout_redirect_path: "{{ app_logs_path }}/puma.{{ rails_env }}.log"
+
+
+# === UNICORN
+unicorn_sock_path: "/tmp/unicorn.{{ rails_env }}.sock"
+unicorn_config_path: "{{ app_config_path }}/unicorn.{{ rails_env }}.rb"
+unicorn_pid_path: "{{ app_temp_path }}/unicorn.{{ rails_env }}.pid"
+unicorn_stderr_path: "{{ app_logs_path }}/unicorn.err.log"
+unicorn_stdout_path: "{{ app_logs_path }}/unicorn.log"
+

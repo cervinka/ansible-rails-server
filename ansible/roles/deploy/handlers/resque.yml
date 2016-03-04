@@ -1,0 +1,5 @@
+---
+- name: restart resque
+  become: true
+  service: name={{ resque_app_name }} state=restarted
+  when: "'resque' in background_jobs"

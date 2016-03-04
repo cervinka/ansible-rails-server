@@ -1,0 +1,2 @@
+os_init_system: systemd     # systemd upstart
+postgresql_version: 9.4

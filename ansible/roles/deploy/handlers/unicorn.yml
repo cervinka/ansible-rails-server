@@ -1,0 +1,5 @@
+---
+#- name: restart application
+#  become: true
+#  service: name={{ unicorn_app_name }} state=restarted
+#  when: "'application' in group_names"

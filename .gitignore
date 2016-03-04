@@ -1,0 +1,6 @@
+inventory
+ansible/group_vars/all.yml
+
+.vagrant
+ssh_pubkeys/*.pub
+

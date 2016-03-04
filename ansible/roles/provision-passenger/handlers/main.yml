@@ -1,0 +1,4 @@
+---
+- name: restart passenger
+  service: name=nginx state=restarted
+  when: "'application' in group_names"

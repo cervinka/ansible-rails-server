@@ -1,0 +1,3 @@
+# {{ ansible_managed }}
+{{ user_name }} ALL=(ALL) NOPASSWD: ALL
+{# TODO: more strict alternative: {{ user_name }} ALL=NOPASSWD: /sbin/start {{ app_name }}, /sbin/stop {{ app_name }}, {{ server_restart_command }} #}

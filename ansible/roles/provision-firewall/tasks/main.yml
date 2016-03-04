@@ -1,0 +1,22 @@
+---
+# place desired hosts under ufw group in inventory file if you want ansible to set firewall for you
+
+- name: Install apt dependencies
+  apt: name={{ item }}
+  with_items:
+    - ufw
+
+- name: Allow ports in firewall
+  ufw: rule=allow port={{ item }} proto=tcp
+  with_items: firewall_allowed_ports
+
+# this must be last (or at least after ssh rule)
+- name: Set firewall default policy
+  ufw: state=enabled policy=reject
+  sudo: true
+
+
+#- include: firewall-base.yml
+#
+#- include: firewall-application.yml
+#  when: ('application' in groups) and (inventory_hostname in groups['application'])

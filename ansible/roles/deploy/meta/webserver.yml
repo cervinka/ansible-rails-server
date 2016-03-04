@@ -1,0 +1,6 @@
+---
+dependencies:
+  - { role: 'nginx' }
+  - { role: 'puma', when: server_type == 'nginx_puma'}
+  - { role: 'unicorn', when: server_type == 'nginx_unicorn'}
+  - { role: 'passenger', when: server_type == 'nginx_passenger'}

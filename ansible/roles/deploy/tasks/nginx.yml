@@ -1,0 +1,23 @@
+---
+- name: Copy nginx configuration
+  become: true
+  template: src={{ server_type }}.conf.j2 dest=/etc/nginx/sites-available/{{ app_name }}.conf
+  notify: restart nginx
+  tags: nginx
+
+- name: Symlink nginx configuration
+  become: true
+  file: src=/etc/nginx/sites-available/{{ app_name }}.conf dest=/etc/nginx/sites-enabled/{{ app_name }}.conf state=link
+  notify: restart nginx
+  tags: nginx
+
+#- name: Copy nginx configuration
+#  template: src={{ server_type }}.conf.j2 dest=/etc/nginx/sites-available/{{ server_name }}.conf
+#  notify: restart nginx
+#  tags: nginx
+#
+#- name: Symlink nginx configuration
+#  file: src=/etc/nginx/sites-available/{{ server_name }}.conf dest=/etc/nginx/sites-enabled/{{ server_name }}.conf state=link
+#  notify: restart nginx
+#  tags: nginx
+#

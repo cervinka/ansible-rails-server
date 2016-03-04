@@ -1,0 +1,12 @@
+---
+- name: Create sidekiq upstart config
+  become: true
+  template: src=sidekiq-upstart.conf.j2 dest=/etc/init/{{ sidekiq_app_name }}.conf
+  when: os_init_system == 'upstart'
+  notify: restart sidekiq
+
+- name: Create sidekiq systemd config
+  become: true
+  template: src=sidekiq-systemd.service.j2 dest=/etc/systemd/system/{{ sidekiq_app_name }}.service
+  when: os_init_system == 'systemd'
+  notify: restart sidekiq

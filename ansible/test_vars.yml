@@ -1,0 +1,6 @@
+---
+- hosts: all
+  tasks:
+  - name: show variable content
+    debug: var="{{ variable }}"
+

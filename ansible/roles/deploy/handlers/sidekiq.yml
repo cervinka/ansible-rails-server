@@ -1,0 +1,5 @@
+---
+- name: restart sidekiq
+  become: true
+  service: name={{ sidekiq_app_name }} state=restarted
+  when: "'sidekiq' in background_jobs"

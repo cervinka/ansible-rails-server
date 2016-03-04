@@ -1,0 +1,65 @@
+---
+#- include_vars: ../defaults/puma.yml
+#- include_vars: ../defaults/sidekiq.yml
+#- include_vars: ../defaults/delayed_job.yml
+#- include_vars: ../defaults/resque.yml
+
+#- name: Authorize current user
+#  authorized_key: user={{ user_name }} key='{{ lookup('file', '~/.ssh/id_rsa.pub') }}'
+
+#- name: Allow to start / stop app with sudo
+#  template: src=sudoers.d.conf.j2 dest=/etc/sudoers.d/{{ app_name }} validate='visudo -cf %s'
+
+
+
+- debug: msg='Local rails realpath {{ local_rails_realpath }}'
+- debug: var='rails_env'
+- debug: var='databases'
+- debug: var='background_jobs'
+- debug: var='ansible_all_ipv4_addresses'
+- debug: msg="{{ ansible_distribution }} {{ ansible_distribution_release }} {{ ansible_distribution_version }}, kernel {{ ansible_kernel }}"
+
+
+
+- debug: msg="{{ xxx }}"
+
+- include: prepare_new_release.yml
+
+- include: mysql.yml
+  when: "'mysql' in databases"
+
+- include: postgresql.yml
+  when: "'postgresql' in databases"
+
+- include: redis.yml
+  when: "'redis' in databases"
+
+- include: sidekiq.yml
+  when: "'sidekiq' in background_jobs"
+
+- include: delayed_job.yml
+  when: "'delayed_job' in background_jobs"
+
+- include: resque.yml
+  when: "'resque' in background_jobs"
+
+
+- include: activate_new_release.yml
+
+- include: nginx.yml
+
+- include: puma.yml
+  when:  "server_type == 'nginx_puma'"
+
+- include: unicorn.yml
+  when: "server_type == 'nginx_unicorn'"
+
+- include: passenger.yml
+  when: "server_type == 'nginx_passenger'"
+
+
+
+- name: Cleanup
+  shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"
+  args:
+    chdir: '{{ releases_path }}'

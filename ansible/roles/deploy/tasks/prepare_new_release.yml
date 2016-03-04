@@ -1,0 +1,85 @@
+---
+
+
+
+- name: Create directories
+  file: path={{ item }} state=directory owner={{ user_name }} group={{ group_name }}
+  with_items:
+    - '{{ path }}'
+    - '{{ releases_path }}'
+    - '{{ shared_path }}'
+    - '{{ shared_path }}/tmp'
+    - '{{ shared_path }}/log'
+    - '{{ shared_path }}/public/assets'
+    - '{{ shared_path }}/config'
+    - '{{ shared_path }}/vendor'
+    - '{{ shared_path }}/vendor/bundle'
+
+- set_fact: this_release_path={{ releases_path }}/{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+
+- debug: msg='New release path {{ this_release_path }}'
+
+- name: Create new release dir
+  become: true
+  file: path={{ this_release_path }} state=directory owner={{ user_name }} group={{ group_name }}
+
+- name: Update code
+  git: repo={{ git_url }} dest={{ git_cache_path }} version={{ git_branch }} accept_hostkey=yes
+  register: git
+
+- debug: msg='Updated repo from {{ git.before }} to {{ git.after }}'
+
+- name: Copy code to release path
+  command: "cp -R -p {{ git_rails_path }}/. {{ this_release_path }}"
+
+
+- name: Delete precompiled assets directory
+  file: path={{ this_release_path }}/public/assets state=absent
+
+- name: Symlink shared - pre phase
+  file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
+  with_items:
+    - vendor/bundle
+
+
+- name: Install gems
+  command: /bin/bash -lc 'bundle install --deployment --without="development test"'
+  args:
+    chdir: '{{ this_release_path }}'
+
+
+- name: Assure that config dir exists
+  file: path="{{ this_release_path }}/config" state=directory
+
+#- name: Create config/database.yml
+#  template: src=database.yml.j2 dest={{ app_config_path }}/database.yml owner={{ user_name }} mode=0600 backup=yes
+#  when: postgresql_orm in ['activerecord', 'sequel', 'datamapper']
+#  TODO mysql, mongo ...
+
+
+# database.yml and secrets.yml should not be under version control so copy them over
+- name: Check if config/{{ item }}.yml exists
+  stat:
+    path: "{{ local_rails_realpath }}/config/{{ item }}.yml"
+  connection: local
+  sudo: no
+  register: configs
+  with_items:
+    - database
+    - secrets
+
+- name: Copy config/{{ item.item }}.yml to {{ this_release_path }}/config
+  copy:
+    src: "{{ local_rails_realpath }}/config/{{ item.item }}.yml"
+    dest: '{{ this_release_path }}/config/{{ item.item }}.yml'
+#    owner: '{{ user_name }}'
+#    group: '{{ group_name }}'
+    mode: 0600
+  with_items: configs.results
+  when: item.stat.exists
+
+
+
+
+
+

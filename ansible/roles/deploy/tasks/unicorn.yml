@@ -1,0 +1,21 @@
+---
+- name: Configure unicorn
+  template: src=unicorn.rb.j2 dest={{ unicorn_config_path }}
+
+#- name: Install unicorn
+#  command: /bin/bash -l -c 'gem install unicorn --no-ri --no-rdoc' chdir={{ app_path }}
+#  sudo: no
+
+
+- name: Create unicorn upstart config
+  become: true
+  template: src=unicorn-upstart.conf.j2 dest=/etc/init/{{ unicorn_app_name }}.conf
+  when: os_init_system == 'upstart'
+
+- name: Create unicorn systemd config
+  become: true
+  template: src=unicorn-systemd.service.j2 dest=/etc/systemd/system/{{ unicorn_app_name }}.service
+  when: os_init_system == 'systemd'
+
+- name: restart unicorn
+  service: name={{ unicorn_app_name }} state=restarted
