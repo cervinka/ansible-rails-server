@@ -61,7 +61,7 @@
 
 - name: Set up authorized_keys for the deploy user
   authorized_key: user="{{ user_name }}" key="{{ lookup('file', item) }}" state=present
-  with_fileglob: ../../../../ssh_pubkeys/*
+  with_fileglob: ../../../../ssh_pubkeys/*.pub
 
 - name: Setup script to read application environment
   template: src=read_environment.sh.j2 dest=/etc/profile.d/read_environment.sh
