@@ -20,9 +20,6 @@
 - debug: msg="{{ ansible_distribution }} {{ ansible_distribution_release }} {{ ansible_distribution_version }}, kernel {{ ansible_kernel }}"
 
 
-
-- debug: msg="{{ xxx }}"
-
 - include: prepare_new_release.yml
 
 - include: mysql.yml
