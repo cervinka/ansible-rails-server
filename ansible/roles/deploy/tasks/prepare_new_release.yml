@@ -15,6 +15,9 @@
     - '{{ shared_path }}/vendor'
     - '{{ shared_path }}/vendor/bundle'
 
+- name: Create temp directory
+  file: path={{ app_temp_path }} state=directory owner={{ user_name }} group={{ group_name }}
+
 - set_fact: this_release_path={{ releases_path }}/{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
 
 - debug: msg='New release path {{ this_release_path }}'
