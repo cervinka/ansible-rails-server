@@ -5,6 +5,7 @@ app_name: demoapp
 git_url: git@github.com:demo_user/demoapp.git
     # git@bitbucket.org:USER/PROJECT.git   git@github.com:USER/PROJECT.git
 
+git_branch: master
 git_rails_subdir: '/app'
     # path to rails app from git root
     # if rails app is subdir of git repo, then set git_rails_subdir to that dir, e.g.: '/app'
@@ -95,7 +96,6 @@ packages:
 #  - libqt5webkit5-dev
 
 # === GIT
-git_branch: private
 git_cache_path: '{{ path }}/shared/git_cache'
 git_rails_path: '{{ git_cache_path }}{{ git_rails_subdir }}'
 
