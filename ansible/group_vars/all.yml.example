@@ -16,8 +16,9 @@ os_distribution: 'debian/jessie64'
     # this is only for Vagrant - Vagrantfile grabs os distribution from here
 
 firewall_allowed_ports: [22, 80]
-    # if variable firewall_allowed_ports is commented out, the firewall will not be set
+    # place servers into firewall group in inventory
     # firewall setting is done by ufw and is VERY BASIC now!!
+    # don't forget to add SSH port to allowed ports ;-)
 
 vagrant_app_path: "../../"
     # this path relatively to Vagrantfile will be mapped as /#{APP_NAME} inside vagrant guest

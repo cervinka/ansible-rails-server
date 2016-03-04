@@ -4,35 +4,40 @@ prod_demo_srv2 ansible_ssh_port=22 ansible_ssh_host=DEMO_SERVER_IP
 
 ; ========== FEATURES ==========
 [application]
-; prod_demo_srv1
+prod_demo_srv1
 
 [postgresql]
-; prod_demo_srv2
+prod_demo_srv2
 
 [mysql]
 
 [mongodb]
 
 [redis]
-; prod_demo_srv2
+prod_demo_srv2
 
 [sidekiq]
-; prod_demo_srv2
+prod_demo_srv2
 
 [delayed_job]
 
 [resque]
 
+[firewall]
+prod_demo_srv1
+prod_demo_srv2
+
 ; ========== ENVIRONMENT ==========
-;[staging]
+[staging]
+
 [production]
-; prod_demo_srv1
-; prod_demo_srv2
+prod_demo_srv1
+prod_demo_srv2
 
 ; ========== OS DISTRIBUTION ==========
 ; to load vars form group_vars/<us distribution>.yml host must be in relevant group
 [debian-jessie]
-; prod_demo_srv1
+prod_demo_srv1
 
 [ubuntu-trusty]
-; prod_demo_srv2
+prod_demo_srv2

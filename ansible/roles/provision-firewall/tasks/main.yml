@@ -1,5 +1,5 @@
 ---
-# place desired hosts under ufw group in inventory file if you want ansible to set firewall for you
+# place  hosts under firewall group in inventory file if you want ansible to set firewall for you
 
 - name: Install apt dependencies
   apt: name={{ item }}

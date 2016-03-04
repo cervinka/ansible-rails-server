@@ -3,20 +3,20 @@ stag_demo_srv1 ansible_ssh_port=22 ansible_ssh_host=DEMO_SERVER_IP
 
 ; ========== FEATURES ==========
 [application]
-; stag_demo_srv1
+stag_demo_srv1
 
 [postgresql]
-; stag_demo_srv1
+stag_demo_srv1
 
 [mysql]
 
 [mongodb]
 
 [redis]
-; stag_demo_srv1
+stag_demo_srv1
 
 [sidekiq]
-; stag_demo_srv1
+stag_demo_srv1
 
 [delayed_job]
 
@@ -24,7 +24,7 @@ stag_demo_srv1 ansible_ssh_port=22 ansible_ssh_host=DEMO_SERVER_IP
 
 ; ========== ENVIRONMENT ==========
 [staging]
-; stag_demo_srv1
+stag_demo_srv1
 
 ;[production]
 
@@ -33,4 +33,4 @@ stag_demo_srv1 ansible_ssh_port=22 ansible_ssh_host=DEMO_SERVER_IP
 [debian-jessie]
 
 [ubuntu-trusty]
-; stag_demo_srv1
+stag_demo_srv1
