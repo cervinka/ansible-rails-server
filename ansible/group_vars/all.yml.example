@@ -28,7 +28,7 @@ vagrant_app_path: "../../"
 local_rails_path: "{{ inventory_dir }}/../.."
     # rails dir relatively to inventory file
     # you can check if dir is set correctly by executing next playbook in e.g. production dir:
-    #     ansible-playbook -u root -i inventory ../ansible/test_vars.yml -e "variable=local_rails_realpath"
+    #     ansible-playbook -u root -i inventory ../ansible/test_vars.yml -e "variable=local_rails_path"
 
     # set to "{{ inventory_dir }}/../.." if file structure is:
     # my_rails_app_dir
@@ -70,7 +70,6 @@ path: "{{ user_home_path }}/apps/{{ app_name }}"
 
 
 # === APP SETTINGS
-local_rails_realpath: "{{ local_rails_path | realpath}}"
 group_name: '{{ user_name }}'
 user_home_path: "/home/{{ user_name }}"
 releases_path: '{{ path }}/releases'

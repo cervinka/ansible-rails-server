@@ -63,7 +63,7 @@
 # database.yml and secrets.yml should not be under version control so copy them over
 - name: Check if config/{{ item }}.yml exists
   stat:
-    path: "{{ local_rails_realpath }}/config/{{ item }}.yml"
+    path: "{{ local_rails_path }}/config/{{ item }}.yml"
   connection: local
   sudo: no
   register: configs
@@ -73,7 +73,7 @@
 
 - name: Copy config/{{ item.item }}.yml to {{ this_release_path }}/config
   copy:
-    src: "{{ local_rails_realpath }}/config/{{ item.item }}.yml"
+    src: "{{ local_rails_path }}/config/{{ item.item }}.yml"
     dest: '{{ this_release_path }}/config/{{ item.item }}.yml'
 #    owner: '{{ user_name }}'
 #    group: '{{ group_name }}'

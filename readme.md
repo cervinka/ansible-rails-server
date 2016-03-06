@@ -125,7 +125,7 @@ TIP: To check, if all is set, you can check there is no file with `.example` ext
 
     Note that agent-forwarding is excepted to be set to fetch git repository in deployment phase (maybe `ssh-add` will be sufficient).
 
-There is also a helper script which shows you how is some variable set. Use it as `ansible-playbook -u root -i inventory ../ansible/test_vars.yml -e "variable=VARIABLE_NAME"`. Interesing VARIABLE_NAMEs are e.g. `local_rails_realpath`, `groups`, `path`
+There is also a helper script which shows you how is some variable set. Use it as `ansible-playbook -u root -i inventory ../ansible/test_vars.yml -e "variable=VARIABLE_NAME"`. Interesing VARIABLE_NAMEs are e.g. `local_rails_path`, `groups`, `path`
 
 # Contributing
 
